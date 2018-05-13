@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>A Web Page</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+
+  <body>
+    <h2 class="header">Classroom Manager</h2>
+    <!-- <div>
+        <span>Class Name: </span>
+
+Read more: https://html.com/tags/comment-tag/#ixzz5DQoiqAdA
+        <select name="courseNames">
+          {% for class in classes %}
+          <option> {{class.name}} </option>
+          {% endfor %}
+        </select>
+    </div> -->
+
+    <div>
+        <span>Class Name: </span>
+        <select id="courseID" name="course2Names" onchange="courseChanged()">
+          <option value="1"> blah </option>
+          <option value="5555"> blah2 </option>
+        </select>
+    </div>
+
+    <br>
+
+    <div class="teacherInput">
+      Teacher : <input type="text" id="teacherID" readonly>
+    </div>
+
+    <div class="studentInput">
+        <input type="text" name="student" id="studentName">
+        <input class="button" type="submit" value="Add Student" onclick="studentAdded()">
+    </div>
+
+    <br>
+
+    <div class="studentOutput">
+      <textarea id="studentsInCourseOutput" rows="12" cols="21" readonly> </textarea>
+      <br>
+      <button class="button" type="button" id="SortAsc" onclick="sortAscending()">Sort Asc</button>
+      <button class="button" type="button" id="SortDes" onclick="sortDescending()">Sort Des</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+
+  </body>
+  <script type="text/javascript">
+
+
+</script>
+
+
+</html>
