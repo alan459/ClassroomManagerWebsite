@@ -21,28 +21,42 @@ def showMainPage():
 
 @app.route('/courseInfo')
 def getCourses():
-  # query courses from database and return in JSON format
-  courses2 = session.query(Course).all()
-  return jsonify([r.serialize for r in courses2])
+    # query courses from database and return in JSON format
+    courses = session.query(Course).all()
+    return jsonify([r.serialize for r in courses])
 
 
-@app.route('/addstudent', methods=['GET', 'POST'])
-def addStudent():
-  if request.method == "POST":
+@app.route('/classroom/api/courses/<int:course_id>/students/', methods=['POST'])
+def addStudent(course_id):
+    # if request.method == "POST":
     newStudentName = request.form.get("StudentName")
-    courseName = request.form.get("CourseName")
 
-    course = session.query(Course).filter_by(name=courseName).first()
-
+    course = session.query(Course).get(course_id)
     newStudent = Student(name=newStudentName)
+
     session.add(newStudent)
     course.students.append(newStudent)
+
     session.commit()
+    print newStudent.id
 
-    return "success"
+    return jsonify({
+        'status': 'success',
+        'newId': newStudent.id
+    })
 
-  return "fail"
 
+@app.route('/classroom/api/courses/<int:course_id>/students/<int:student_id>', methods=['DELETE'])
+def deleteStudentFromCourse(course_id, student_id):
+    course = session.query(Course).get(course_id)
+    student = session.query(Student).get(student_id)
+
+    if not student or not course:
+        return "Fail"
+
+    course.students.remove(student)
+
+    return jsonify({'result': True})
 
 
 if __name__ == '__main__':

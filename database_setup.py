@@ -8,9 +8,11 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 association_table = Table('association', Base.metadata,
-    Column('course_id', Integer, ForeignKey('courses.id')),
-    Column('student_id', Integer, ForeignKey('students.id'))
-)
+                          Column('course_id', Integer,
+                                 ForeignKey('courses.id')),
+                          Column('student_id', Integer,
+                                 ForeignKey('students.id'))
+                          )
 
 
 class Course(Base):
@@ -20,9 +22,8 @@ class Course(Base):
     name = Column(String(250), nullable=False)
     teacher = Column(String(250), nullable=False)
     students = relationship("Student",
-                    secondary=association_table,
-                    backref="course")
-
+                            secondary=association_table,
+                            backref="course")
 
     @property
     def serialize(self):
@@ -31,7 +32,7 @@ class Course(Base):
             'name': self.name,
             'id': self.id,
             'teacher': self.teacher,
-            'students': [student.name for student in self.students],
+            'students': [student.serialize for student in self.students],
         }
 
 
@@ -47,10 +48,8 @@ class Student(Base):
         return {
             'name': self.name,
             'id': self.id,
-            #'classes': self.classes,
+            # 'classes': self.classes,
         }
-
-
 
 
 engine = create_engine('sqlite:///classes.db')

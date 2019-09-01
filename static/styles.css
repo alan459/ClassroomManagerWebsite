@@ -13,6 +13,19 @@ body {
 	height: 240px;
 }
 
+/* Style the close button */
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+}
+
+.close:hover {
+background-color: #f44336;
+color: white;
+}
+
 input {
     margin-left: 35px;
     width: 160px;

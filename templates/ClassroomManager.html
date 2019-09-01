@@ -1,60 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>A Web Page</title>
-    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-  </head>
 
-  <body>
-    <h2 class="header">Classroom Manager</h2>
-    <!-- <div>
-        <span>Class Name: </span>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-Read more: https://html.com/tags/comment-tag/#ixzz5DQoiqAdA
-        <select name="courseNames">
-          {% for class in classes %}
-          <option> {{class.name}} </option>
-          {% endfor %}
-        </select>
-    </div> -->
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+    crossorigin="anonymous">
 
-    <div>
-        <span>Class Name: </span>
-        <select id="courseID" name="course2Names" onchange="courseChanged()">
-          <option value="1"> blah </option>
-          <option value="5555"> blah2 </option>
-        </select>
+  <title>Classroom</title>
+  <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+</head>
+
+<body>
+
+  <hr>
+  <div class="row sticky-top bg-white">
+    <h2 class="header page-header">Classroom Manager</h2>
+  </div>
+  <hr>
+
+  <div id="CoursesRow" class="row">
+    <h5> Class Name: </h5>
+    <select id="courseID" class="form-control col-sm-1" name="course2Names" onchange="baseView.courseSelection.courseChanged()"
+      style="margin-left: 2rem">
+      <option value=""> Select Course </option>
+    </select>
+  </div>
+
+  <br>
+
+  <div class="row teacherInput">
+    <h5 class=""> Teacher: </h5>
+    <input class="form-control col-sm-1" type="text" id="teacherID" style="margin-left: 4.25rem" readonly>
+  </div>
+
+  <div id="studentInput" class="row" style="margin-left: -0.5%">
+    <input id="studentName" class="form-control col-sm-1 offset-sm-1" type="text" name="student">
+    <input class="btn btn-success" type="submit" value="Add Student" onclick="baseView.outputView.studentAdded()">
+  </div>
+
+  <br>
+
+  <div id="output row" class="card row offset-sm-1" style="width: 18rem;">
+    <div class="card-header"> Enrolled </div>
+    <ul id="studentsInCourseOutput" class="list-group list-group-flush">
+    </ul>
+  </div>
+
+  <br>
+
+  <div id="sortButtons" class="row align-self-center offset-sm-1">
+    <div class="btn-group mr-2" role="group">
+      <button id="SortAsc" class="btn btn-success" onclick="baseView.outputView.sortAscending()" style="margin-right: 1rem" type="button">Sort Asc</button>
+      <button id="SortDes" class="btn btn-success" onclick="baseView.outputView.sortDescending()" type="button">Sort Des</button>
     </div>
 
-    <br>
-
-    <div class="teacherInput">
-      Teacher : <input type="text" id="teacherID" readonly>
-    </div>
-
-    <div class="studentInput">
-        <input type="text" name="student" id="studentName">
-        <input class="button" type="submit" value="Add Student" onclick="studentAdded()">
-    </div>
-
-    <br>
-
-    <div class="studentOutput">
-      <textarea id="studentsInCourseOutput" rows="12" cols="21" readonly> </textarea>
-      <br>
-      <button class="button" type="button" id="SortAsc" onclick="sortAscending()">Sort Asc</button>
-      <button class="button" type="button" id="SortDes" onclick="sortDescending()">Sort Des</button>
-    </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
-
-  </body>
-  <script type="text/javascript">
+  </div>
 
 
-</script>
 
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='app.js') }}"></script>
+
+</body>
+<script type="text/javascript"></script>
 
 </html>
