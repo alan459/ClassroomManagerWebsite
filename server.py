@@ -19,7 +19,7 @@ def showMainPage():
     return render_template('ClassroomManager.html')
 
 
-@app.route('/courseInfo')
+@app.route('/classroom/api/courses/')
 def getCourses():
     # query courses from database and return in JSON format
     courses = session.query(Course).all()

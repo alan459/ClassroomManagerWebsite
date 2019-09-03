@@ -90,7 +90,7 @@ const elementIds = {
     teacherFieldId: 'teacherID'
 }
 
-const serverUrl = 'http://0.0.0.0:5000/courseInfo';
+const serverUrl = 'http://0.0.0.0:5000/classroom/api/courses/';
 
 // make it go!
 controller.init(serverUrl, elementIds);

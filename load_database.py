@@ -31,6 +31,7 @@ course1 = Course(name="Algebra I", teacher="Mr. Alberts")
 course1.students.append(student1)
 course1.students.append(student2)
 course1.students.append(student3)
+course1.students.append(student4)
 
 course1 = Course(name="Algebra II", teacher="Mr. Wu")
 
@@ -58,7 +59,6 @@ session.add(course6)
 session.add(course7)
 
 session.commit()
-
 
 
 print ("added classes to database!")
