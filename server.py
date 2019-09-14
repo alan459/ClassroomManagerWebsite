@@ -15,46 +15,75 @@ session = DBSession()
 @app.route('/')
 @app.route('/classroom/')
 def showMainPage():
-
     return render_template('ClassroomManager.html')
 
 
-@app.route('/classroom/api/courses/')
+@app.route('/api/courses/JSON')
 def getCourses():
     # query courses from database and return in JSON format
     courses = session.query(Course).all()
     return jsonify([r.serialize for r in courses])
 
 
-@app.route('/classroom/api/courses/<int:course_id>/students/', methods=['POST'])
-def addStudent(course_id):
-    # if request.method == "POST":
-    newStudentName = request.form.get("StudentName")
-
+@app.route('/api/courses/<int:course_id>/JSON', methods=['PUT'])
+def addStudentToCourse(course_id):
     course = session.query(Course).get(course_id)
-    newStudent = Student(name=newStudentName)
+    if not course:
+        return jsonify({
+            'status': 'failed',
+            'msg': "course id " + course_id + " not found",
+            'id': course_id
+        })
 
-    session.add(newStudent)
-    course.students.append(newStudent)
+    newStudentId = request.form.get("studentId")
+    student = session.query(Student).get(newStudentId)
 
+    if not student:
+        return jsonify({
+            'status': 'failed',
+            'msg': "student id " + newStudentId + " not found",
+            'id': newStudentId
+        })
+
+    course.students.append(student)
     session.commit()
-    print newStudent.id
 
     return jsonify({
         'status': 'success',
-        'newId': newStudent.id
+        'id': newStudentId,
+        'name': student.name
     })
 
 
-@app.route('/classroom/api/courses/<int:course_id>/students/<int:student_id>', methods=['DELETE'])
-def deleteStudentFromCourse(course_id, student_id):
-    course = session.query(Course).get(course_id)
-    student = session.query(Student).get(student_id)
+@app.route('/api/students/JSON', methods=['GET'])
+def getStudents():
+    # query students from database and return in JSON format
+    students = session.query(Student).all()
+    return jsonify([r.serialize for r in students])
 
-    if not student or not course:
+
+@app.route('/api/students/JSON', methods=['POST'])
+def addStudent():
+    newStudentName = request.form.get("name")
+    newStudent = Student(name=newStudentName)
+
+    session.add(newStudent)
+    session.commit()
+
+    return jsonify({
+        'status': 'success',
+        'id': newStudent.id,
+        'name': newStudent.name
+    })
+
+
+@app.route('/api/students/<int:student_id>/JSON', methods=['DELETE'])
+def deleteStudent(student_id):
+    student = session.query(Student).get(student_id)
+    if not student:
         return "Fail"
 
-    course.students.remove(student)
+    session.delete(student)
 
     return jsonify({'result': True})
 

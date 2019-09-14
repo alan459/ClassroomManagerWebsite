@@ -32,7 +32,7 @@ class Course(Base):
             'name': self.name,
             'id': self.id,
             'teacher': self.teacher,
-            'students': [student.serialize for student in self.students],
+            'students': [student.id for student in self.students],
         }
 
 
@@ -48,7 +48,6 @@ class Student(Base):
         return {
             'name': self.name,
             'id': self.id,
-            # 'classes': self.classes,
         }
 
 

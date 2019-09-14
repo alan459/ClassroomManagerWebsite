@@ -1,86 +1,172 @@
-
 /* ======= Model ======= */
-const model =
-{
+const model = {
     currentCourse: null,
-    courses: [],
-    changesMade: [],
+    currentStudents: null,
+    courses: {},
+    students: {},
 
-    init: function (data) {
-        this.courses = data;
+    init: function (courses) {
+        console.log('Initializing model with courses: ', courses);
+        this.courses = courses;
     },
+
+    addStudents: function (students) {
+        this.students = students;
+    },
+
+    addStudent: function (student) {
+        this.students[student.id] = student;
+    },
+
+    getStudent: function (id) {
+        return this.students[id];
+    },
+
+    setCurrentCourse: function (courseId) {
+        this.currentCourse = this.courses[courseId];
+
+        this.currentStudents = this.studentsForCurrentCourse();
+    },
+
+    studentsForCurrentCourse: function () {
+        const studentObjects = this.currentCourse.students.map(studentId => {
+            return model.students[studentId];
+        })
+        return studentObjects;
+    }
 };
+
+
+const messenger = {
+    getFromServer: function (urlToConnectTo, elementIds) {
+        $.getJSON(urlToConnectTo + "/api/courses/JSON", function (data) {
+            controller.coursesRetrieved(data);
+        });
+
+        $.getJSON(urlToConnectTo + "/api/students/JSON", function (studentsArr) {
+            controller.studentsRetrieved(studentsArr);
+        });
+    },
+
+    postStudentToServer: function (studentName) {
+        $.ajax({
+            url: `/api/students/JSON`,
+            type: "post",
+            data: {
+                name: studentName,
+            },
+            success: function (returnData) {
+                const student = {
+                    'id': returnData.id,
+                    'name': returnData.name
+                }
+                controller.studentAddedToServer(student);
+            }
+        });
+    },
+
+    updateCourseOnServer: function (courseId, studentId) {
+        $.ajax({
+            url: `/api/courses/${courseId}/JSON`,
+            type: "put",
+            dataType: "json",
+            data: {
+                "courseId": courseId,
+                "studentId": studentId,
+            }
+        });
+    },
+
+    deleteStudentFromServer: function (studentId) {
+        $.ajax({
+            url: `/api/students/${studentId}/JSON`,
+            type: 'delete',
+            success: function (result) {
+                console.log("Delete request for student sent, result: ", result);
+            }
+        });
+    },
+}
 
 /* ======= Controller ======= */
 const controller = {
 
     init: function (urlToConnectTo, elementIds) {
-        $.getJSON(urlToConnectTo, function (data) {
-            model.init(data);
-            baseView.init(elementIds, controller.getCourses());
-        });
+        console.log("Initializing Controller");
+
+        // upon sucess, coursesRetrieved() and studentsRetrieved() called
+        messenger.getFromServer(urlToConnectTo, elementIds);
     },
 
-    postStudentToServer: function (studentName) {
-        $.post(`/classroom/api/courses/${model.currentCourse.id}/students/`,
-            {
-                StudentName: studentName,
-            },
-            function (returnData) {
-                newStudent = {
-                    name: studentName,
-                    id: returnData.newId
-                }
-                model.currentCourse.students.push(newStudent);
 
-                controller.addStudentToOutput(newStudent)
-            }
-        );
+    coursesRetrieved: function (courses) {
+        console.log("Retrieved courses: ", courses);
+        model.init(courses);
+        baseView.init(elementIds, courses);
     },
 
-    deleteStudentFromServer: function (studentId, courseId) {
-        $.ajax({
-            url: `/classroom/api/courses/${courseId}/students/${studentId}`,
-            type: 'DELETE',
-            success: function (result) {
-                console.log(result)
-            }
-        });
+    studentsRetrieved: function (studentsArr) {
+        console.log("Retrieved students: ", studentsArr);
+
+        // convert students array to map
+        const studentsMap = studentsArr.reduce(function (map, obj) {
+            map[obj.id] = obj;
+            return map;
+        }, {});
+
+        model.addStudents(studentsMap);
     },
 
-    getTeacherForCurrentCourse: function () {
-        return model.currentCourse['teacher'];
+    sortStudents: function (reverse) {
+        baseView.outputView.sort(reverse, model.currentStudents, baseView.courseSelection.hasSelectedCourse());
     },
 
-    getStudentsForCurrentCourse: function () {
-        return model.currentCourse['students'];
+    studentAdded: function (reverse) {
+        const studentName = baseView.studentInputField.value;
+
+        if (baseView.inputValid(studentName))
+            // calls studentAddedToServer() upon success
+            messenger.postStudentToServer(studentName);
+        else
+            alert("Failed to post student to server.");
     },
 
-    getCourses: function () {
-        return model.courses;
+    studentAddedToServer: function (student) {
+        console.log("Post success, current course", model.currentCourse);
+
+        model.currentCourse.students.push(student.id);
+        messenger.updateCourseOnServer(model.currentCourse.id, student.id);
+
+        //console.log("model.getStudent(studentId)", model.getStudent(studentId));
+        model.addStudent(student);
+        baseView.addStudentToOutput(student);
     },
 
     // set the currently-selected course to the id of the passed in course
     setCurrentcourse: function (courseNum) {
-        model.currentCourse = model.courses[courseNum];
+        model.setCurrentCourse(courseNum);
+
+        // set teacher for selected course from model
+        baseView.teacherField.value = model.currentCourse['teacher'];
+
+        baseView.outputView.displayStudents(model.currentStudents, baseView.courseSelection.getIdOfSelectedCourse());
     },
 
-    addStudentToOutput(newStudent) {
-        baseView.outputView.addStudentToOutput(newStudent);
+    // fetches course info whenever a new course is selected, including teacher and students
+    courseChanged: function () {
+        const selectedIndex = baseView.courseSelection.getIdOfSelectedCourse();
+        if (selectedIndex == 0) {
+            baseView.emptyTeacherAndStudentFields();
+            return;
+        }
+
+        this.setCurrentcourse(selectedIndex - 1);
     },
-};
 
-/* ======= View ======= */
-const baseView = {
-    init: function (elementIds, courses) {
-        this.courseSelection = new CoursesDropdownMenu(elementIds.courseDropdownId, courses);
-        this.outputView = new OutputView(elementIds.outputAreaId);
-
-        this.studentInputField = document.getElementById(elementIds.studentFieldId);
-        this.teacherField = document.getElementById(elementIds.teacherFieldId);
+    deleteStudentFromServer: function (studentId) {
+        messenger.deleteStudentFromServer(studentId);
     }
-}
-
+};
 
 
 const elementIds = {
@@ -90,8 +176,7 @@ const elementIds = {
     teacherFieldId: 'teacherID'
 }
 
-const serverUrl = 'http://0.0.0.0:5000/classroom/api/courses/';
+const serverUrl = 'http://0.0.0.0:5000';
 
 // make it go!
 controller.init(serverUrl, elementIds);
-

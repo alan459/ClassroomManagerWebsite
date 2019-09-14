@@ -7,15 +7,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
   <title>Classroom</title>
   <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
-
   <hr>
   <div class="row sticky-top bg-white">
     <h2 class="header page-header">Classroom Manager</h2>
@@ -24,7 +23,7 @@
 
   <div id="CoursesRow" class="row">
     <h5> Class Name: </h5>
-    <select id="courseID" class="form-control col-sm-1" name="course2Names" onchange="baseView.courseSelection.courseChanged()"
+    <select id="courseID" class="form-control col-sm-1" name="course2Names" onchange="controller.courseChanged()"
       style="margin-left: 2rem">
       <option value=""> Select Course </option>
     </select>
@@ -39,17 +38,10 @@
 
   <div id="studentInput" class="row" style="margin-left: -0.5%">
     <input id="studentName" class="form-control col-sm-1 offset-sm-1" type="text" name="student">
-    <input class="btn btn-success" type="submit" value="Add Student" onclick="baseView.outputView.studentAdded()">
+    <input class="btn btn-success" type="submit" value="Add Student" onclick="controller.studentAdded()">
   </div>
 
   <br>
-
-  <!-- 
-  <div id="saveAndDiscard" class="offset-sm-1 btn-toolbar">
-    <button type="button" class="btn btn-outline-primary mr-2" onclick="sort(false)">Save Changes</button>
-    <button type="button" class="btn btn-outline-primary" onclick="sort(true)">Discard Changes</button>
-  </div>
-  <br> -->
 
   <div id="output row" class="card row offset-sm-1" style="width: 18rem;">
     <div class="card-header"> Enrolled </div>
@@ -61,27 +53,30 @@
 
   <div id="sortButtons" class="row align-self-center offset-sm-1">
     <div class="btn-group mr-2" role="group">
-      <button id="SortAsc" class="btn btn-success" onclick="baseView.outputView.sort(false)" style="margin-right: 1rem" type="button">Sort Asc</button>
-      <button id="SortDes" class="btn btn-success" onclick="baseView.outputView.sort(true)" type="button">Sort Des</button>
+      <button id="SortAsc" class="btn btn-success" onclick="controller.sortStudents(false)" style="margin-right: 1rem"
+        type="button">Sort Asc</button>
+      <button id="SortDes" class="btn btn-success" onclick="controller.sortStudents(true)" type="button">Sort
+        Des</button>
     </div>
 
   </div>
 
 
-
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script type="text/javascript" src="{{ url_for('static', filename='js/app.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/OutputView.js') }}"></script>
-  <script type="text/javascript" src="{{ url_for('static', filename='js/CoursesDropdownMenu.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='js/View.js') }}"></script>
 
 </body>
 <script type="text/javascript"></script>
